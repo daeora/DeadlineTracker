@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DeadlineTracker.MainPage"
+             BackgroundColor="#F5F5F5">
+
+    <ScrollView>
+        
+        <VerticalStackLayout
+            Padding="30"
+            Spacing="20"
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            >
+            
+            <Label
+                Text="MiauMiau"
+                FontSize="28"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                TextColor="Black"
+                />
+
+            <Frame
+                CornerRadius="12"
+                Padding="20"
+                HasShadow="True"
+                WidthRequest="320"
+                BackgroundColor="White"
+                >
+
+
+                <VerticalStackLayout Spacing="15" >
+
+                    <Border Stroke="Black" StrokeShape="RoundRectangle 8" Padding="0">
+                        <Entry
+                            Placeholder="Käyttäjätunnus"
+                            HeightRequest="25"
+                            TextColor="Black"
+                            x:Name="Username"
+                            />
+
+                    </Border>
+
+                    <Border Stroke="Black" StrokeShape="RoundRectangle 8" Padding="0" >
+                        <Entry
+                            Placeholder="Salasana"
+                            HeightRequest="25"
+                            IsPassword="True"
+                            TextColor="Black"
+                            x:Name="Password"
+                            />
+                    </Border>
+
+                    <Button
+                       Text="Kirjaudu sisään"
+                       Clicked="login_Clicked"
+                       x:Name="login"
+                       CornerRadius="10"
+                       HeightRequest="50"
+                       BackgroundColor="Black"
+                       TextColor="White"
+                       />
+
+                    <Label Text="Tai"
+                           HorizontalOptions="Center"
+                           TextColor="Gray"
+                           />
+
+                    <Button
+                        Text="Luo uusi käyttäjätunnus"
+                        Clicked="NewAccount_Clicked"
+                        x:Name="NewAccount"
+                        BackgroundColor="#F5F5F5"
+                        />
+
+
+
+                </VerticalStackLayout>
+
+            </Frame>
+                
+        </VerticalStackLayout>
+        
+    </ScrollView>
+
+</ContentPage>
