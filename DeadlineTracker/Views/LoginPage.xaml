@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="DeadlineTracker.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Kirjaudu">
+
+    <VerticalStackLayout Padding="24" Spacing="16">
+        <Label Text="Kirjaudu" FontSize="28" FontAttributes="Bold" />
+        <Entry x:Name="UsernameEntry"
+           Placeholder="Käyttäjänimi"
+           MaxLength="40"
+           ReturnType="Go"
+           Completed="OnSignInClicked" />
+        <Label x:Name="ErrorLabel" TextColor="#b00020" IsVisible="False"/>
+
+        <HorizontalStackLayout Spacing="12">
+            <Button Text="Kirjaudu" Clicked="OnSignInClicked" />
+            <Button Text="Luo käyttäjä" Clicked="OnCreateClicked" />
+        </HorizontalStackLayout>
+
+        <Label Text="Sallitut merkit: A–Z, a–z, 0–9, . _ - (2–40 merkkiä)"
+           FontSize="12" TextColor="Gray"/>
+    </VerticalStackLayout>
+</ContentPage>
