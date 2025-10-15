@@ -2,9 +2,13 @@ namespace DeadlineTracker;
 
 public partial class Yleisnakyma : ContentPage
 {
-	public Yleisnakyma(string username)
-	{
-		InitializeComponent();
-		TervetuloaTeksti.Text = $"Tervetuloa {username}";
-	}
+    public Yleisnakyma()
+    {
+        InitializeComponent();
+    }
+
+    private async void CreateProject_Clicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(ProjectCreatePage));
+    }
 }

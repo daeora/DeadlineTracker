@@ -3,13 +3,16 @@
     x:Class="DeadlineTracker.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:DeadlineTracker"
-    Shell.FlyoutBehavior="Disabled"
-    Title="DeadlineTracker">
+    xmlns:local="clr-namespace:DeadlineTracker">
 
-    <ShellContent
-        Title=""
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
-
+    <TabBar>
+        <ShellContent
+            Route="Yleisnakyma"
+            Title="Yleisnäkymä"
+            ContentTemplate="{DataTemplate local:Yleisnakyma}" />
+        <ShellContent
+            Route="ProjectCreatePage"
+            Title="Uusi projekti"
+            ContentTemplate="{DataTemplate local:ProjectCreatePage}" />
+    </TabBar>
 </Shell>
