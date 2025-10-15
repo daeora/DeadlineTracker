@@ -12,5 +12,23 @@
             VerticalOptions="Center" 
             HorizontalOptions="Center"
             TextColor="Black"/>
+
+        <ScrollView>
+            <VerticalStackLayout Padding="20" Spacing="16">
+
+                <Label Text="Tervetuloa" FontSize="24" FontAttributes="Bold" />
+
+                <!--
+                 napista navigoidaan ProjectCreatePage:lle. -->
+                <Button Text="Luo uusi projekti"
+                    x:Name="CreateProjectButton"
+                    Clicked="CreateProject_Clicked"/>
+
+
+            </VerticalStackLayout>
+        </ScrollView>
     </VerticalStackLayout>
+
+
+
 </ContentPage>

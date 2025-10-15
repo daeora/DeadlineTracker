@@ -1,10 +1,11 @@
-﻿namespace DeadlineTracker
+﻿namespace DeadlineTracker;
+
+public partial class AppShell : Shell
 {
-    public partial class AppShell : Shell
+    public AppShell()
     {
-        public AppShell()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+        // ei pakollinen, mutta selkeyden vuoksi:
+        Routing.RegisterRoute(nameof(ProjectCreatePage), typeof(ProjectCreatePage));
     }
 }
