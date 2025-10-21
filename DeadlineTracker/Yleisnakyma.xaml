@@ -4,13 +4,50 @@
              x:Class="DeadlineTracker.Yleisnakyma"
              Title="Yleisnakyma"
              BackgroundColor="#F5F5F5">
-    
-    <VerticalStackLayout Padding="30" VerticalOptions="Center" HorizontalOptions="Center">
+
+    <VerticalStackLayout Padding="30" Spacing="20">
+        <Grid Padding="0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label 
+                x:Name="TervetuloaTeksti"
+                FontSize="24"
+                VerticalOptions="Start" 
+                HorizontalOptions="Start"
+                TextColor="Black"
+                Grid.Column="0"/>
+            <Button 
+                x:Name="LogOut"
+                Text="Kirjaudu ulos"
+                HorizontalOptions="End"
+                VerticalOptions="Start"
+                BackgroundColor="Black"
+                TextColor="White"
+                CornerRadius="10"
+                Padding="10,5"
+                Grid.Column="2"
+                Clicked="LogOut_Clicked"/>
+        </Grid>
         <Label 
-            x:Name="TervetuloaTeksti"
-            FontSize="24"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center"
-            TextColor="Black"/>
+            Text="Yleisnäkymä"
+            FontSize="28"
+            FontAttributes="Bold"
+            TextColor="Black"
+            HorizontalOptions="Start"/>
+        <Button x:Name="AddProject"
+                Text="+"
+                FontSize="40"
+                WidthRequest="80"
+                HeightRequest="80"
+                CornerRadius="10"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                BackgroundColor="Transparent"
+                BorderColor="Black"
+                BorderWidth="2"
+                Clicked="AddProject_Clicked"/>
     </VerticalStackLayout>
 </ContentPage>

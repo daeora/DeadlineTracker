@@ -66,7 +66,7 @@
 	  <MauiXaml Update="Aikataulu.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Kalenteri.xaml">
+	  <MauiXaml Update="ProjectCreatePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Yleisnakyma.xaml">
