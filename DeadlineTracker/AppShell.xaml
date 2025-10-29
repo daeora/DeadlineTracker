@@ -7,9 +7,22 @@
     Shell.FlyoutBehavior="Disabled"
     Title="DeadlineTracker">
 
+    <!-- Kirjautumissivu (aloitusnäkymä) -->
     <ShellContent
-        Title=""
+        Title="Kirjautuminen"
         ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        Route="LoginPage" />
+
+    <!-- Päänäkymä kirjautumisen jälkeen -->
+    <ShellContent
+        Title="Yleisnäkymä"
+        ContentTemplate="{DataTemplate local:Yleisnakyma}"
+        Route="Home" />
+
+    <!-- Projektin / tehtävän luonti -->
+    <ShellContent
+        Title="Uusi projekti"
+        ContentTemplate="{DataTemplate local:ProjectCreatePage}"
+        Route="ProjectCreate" />
 
 </Shell>

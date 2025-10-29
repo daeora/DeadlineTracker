@@ -42,16 +42,6 @@
 
                     </Border>
 
-                    <Border Stroke="Black" StrokeShape="RoundRectangle 8" Padding="0" >
-                        <Entry
-                            Placeholder="Salasana"
-                            HeightRequest="25"
-                            IsPassword="True"
-                            TextColor="Black"
-                            x:Name="Password"
-                            />
-                    </Border>
-
                     <Button
                        Text="Kirjaudu sisään"
                        Clicked="login_Clicked"
@@ -61,19 +51,6 @@
                        BackgroundColor="Black"
                        TextColor="White"
                        />
-
-                    <Label Text="Tai"
-                           HorizontalOptions="Center"
-                           TextColor="Gray"
-                           />
-
-                    <Button
-                        Text="Luo uusi käyttäjätunnus"
-                        Clicked="NewAccount_Clicked"
-                        x:Name="NewAccount"
-                        BackgroundColor="#F5F5F5"
-                        />
-
 
 
                 </VerticalStackLayout>
