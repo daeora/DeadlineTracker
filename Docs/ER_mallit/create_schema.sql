@@ -25,8 +25,11 @@ CREATE TABLE IF NOT EXISTS `mydb`.`projekti` (
   `loppupvm` DATE NOT NULL,
   `luotupvm` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `paivitettypvm` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`projekti_id`))
-ENGINE = InnoDB;
+  `onValmis` TINYINT(1) NOT NULL DEFAULT 0,
+  
+  PRIMARY KEY (`projekti_id`),
+  KEY `ix_projekti_onValmis` (`onValmis`)
+) ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
