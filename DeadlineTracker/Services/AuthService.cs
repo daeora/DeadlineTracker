@@ -14,8 +14,11 @@ namespace DeadlineTracker.Services
         //  - Database = se nimi missä taulut on (user, tehtava, projekti, ...)
         //  - User ID ja Password = paikallisen MySQL-tunnarin tiedot
         //
-        private readonly string _connStr =
-           "Server=localhost;Port=3306;Database=mydb;User ID=root;Password=M1nunS3rv3r1sepp0?;";
+        private static readonly string _connStr =
+           "Server=localhost;Port=3306;Database=mydb;User ID=root;Password=D4e1sB4e;";
+
+        // luku-ominaisuus muille
+        public static string ConnectionString => _connStr;
 
         // Tätä kutsutaan kirjautuessa.
         // Palauttaa user_id:n olemassaolevalle käyttäjälle TAI lisää uuden rivin ja palauttaa uuden user_id:n.
