@@ -1,12 +1,28 @@
+using System;
+using Microsoft.Maui.Controls;
+using DeadlineTracker.Services;
+
 namespace DeadlineTracker;
 
 public partial class Yleisnakyma : ContentPage
 {
-    public Yleisnakyma(string username)
+
+    // HUOM: nyt EI ole string username parametria!
+    public Yleisnakyma()
     {
         InitializeComponent();
-        TervetuloaTeksti.Text = $"Tervetuloa {username}";
+
+        // asetetaan tervetuloteksti kirjautuneen mukaan
+        if (!string.IsNullOrWhiteSpace(Session.CurrentUsername))
+        {
+            TervetuloaTeksti.Text = $"Tervetuloa {Session.CurrentUsername}";
+        }
+        else
+        {
+            TervetuloaTeksti.Text = "Tervetuloa";
+        }
     }
+
 
     private async void LogOut_Clicked(object sender, EventArgs e)
     {
@@ -18,18 +34,21 @@ public partial class Yleisnakyma : ContentPage
         if (!confirm)
             return;
 
-        if (Application.Current != null)
-        {
-            Application.Current.MainPage = new AppShell();
-        }
-        if (Shell.Current != null)
-        {
-            await Shell.Current.GoToAsync("//MainPage");
-        }
+        // tyhjenn‰ session
+        Session.CurrentUserId = 0;
+        Session.CurrentUsername = string.Empty;
+
+        // EI en‰‰ vaihdeta MainPagea k‰sin uuteen AppShelliin,
+        // koska meill‰ on sama Shell koko ajan k‰ynniss‰.
+
+        // takaisin kirjaudusivulle
+        await Shell.Current.GoToAsync("//LoginPage");
     }
 
     private async void AddProject_Clicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync(nameof(ProjectCreatePage));
+        // siirry projektin/teht‰v‰n luontiin (ProjectCreatePage)
+        await Shell.Current.GoToAsync("ProjectCreate");
     }
+  
 }

@@ -5,7 +5,9 @@
         public AppShell()
         {
             InitializeComponent();
-            Routing.RegisterRoute(nameof(ProjectCreatePage), typeof(ProjectCreatePage));
+            Routing.RegisterRoute("LoginPage", typeof(MainPage));
+            Routing.RegisterRoute("Home", typeof(Yleisnakyma));
+            Routing.RegisterRoute("ProjectCreate", typeof(ProjectCreatePage));
         }
     }
 }
