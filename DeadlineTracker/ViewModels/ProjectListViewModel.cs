@@ -84,7 +84,7 @@ namespace DeadlineTracker.ViewModels
             {
                 Projects.Add(addBtn);
             }
-            // Päivitä valmius ja varmista tehtävien sidonta
+            // Päivitä valmius ja varmista tehtävien binding
             newProject.PaivitaValmiusJaNakyma();
             foreach (var t in newProject.Tehtavat)
             {
