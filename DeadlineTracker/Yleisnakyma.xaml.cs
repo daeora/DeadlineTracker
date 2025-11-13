@@ -58,15 +58,29 @@ public partial class Yleisnakyma : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        // ladataan projektit aina kun näkymä tulee näkyviin
-        await vm.LoadProjectsAsync(Session.CurrentUserId);
+        await vm.LoadProjectsAsync(Session.CurrentUserId, force: true, all: vm.ShowAll /* jos teit napin */);
     }
 
     private async void CheckBox_CheckedChanged(object sender, CheckedChangedEventArgs e)
     {
-        if (sender is CheckBox cb && cb.BindingContext is Tehtava t && e.Value)
-        {
+        if (!e.Value) return; // reagoi vain kun merkataan valmiiksi
+        if ((sender as BindableObject)?.BindingContext is Tehtava t)
             await vm.CompleteTaskAsync(t);
-        }
     }
+
+    // avataan projektin muokkausnäkymä kun projektikorttia napautetaan
+    private async void OpenProjectEdit_Tapped(object sender, TappedEventArgs e)
+    {
+        if (e.Parameter is int iid)
+            await Shell.Current.GoToAsync($"ProjectEdit?id={iid}");
+        else if (e.Parameter is long lid)
+            await Shell.Current.GoToAsync($"ProjectEdit?id={lid}");
+    }
+
+    private async void ToggleAll_Clicked(object sender, EventArgs e)
+    {
+        vm.ShowAll = !vm.ShowAll;
+        await vm.LoadProjectsAsync(Session.CurrentUserId, force: true, all: vm.ShowAll);
+    }
+
 }

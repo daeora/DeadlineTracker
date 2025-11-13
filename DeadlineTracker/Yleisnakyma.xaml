@@ -4,6 +4,15 @@
              x:Class="DeadlineTracker.Yleisnakyma"
              BackgroundColor="#F5F5F5">
 
+    <ContentPage.ToolbarItems>
+        <!-- Toggle: kaikki vs omat -->
+        <ToolbarItem Text="{Binding ToggleAllText}"
+               Command="{Binding ToggleAllCommand}"
+               Order="Primary"/>
+        <!-- (valinnainen) Kirjaudu ulos -nappi jos halutaan tämäkin yläpalkkiin? -->
+        <!-- <ToolbarItem Text="Kirjaudu ulos" Clicked="LogOut_Clicked" /> -->
+    </ContentPage.ToolbarItems>
+
     <VerticalStackLayout Padding="30" Spacing="20">
         <Grid Padding="0,10">
             <Grid.ColumnDefinitions>
@@ -91,23 +100,34 @@
                                                    Margin="10"
                                                    BorderColor="LightGray"
                                                    CornerRadius="12">
+                                                
+                                                <!-- Tunnistaa kehyksen klikkauksen ja välittää projekti ID:n Project.cs:stä-->
+                                                <Frame.GestureRecognizers>
+                                                    <TapGestureRecognizer Tapped="OpenProjectEdit_Tapped"
+                                                                          CommandParameter="{Binding ProjektiId}" />
+                                                </Frame.GestureRecognizers>
+
                                                 <Grid RowDefinitions="Auto, *, Auto" Padding="8">
                                                     <VerticalStackLayout>
-                                                        <Label Text="{Binding ProjektiNimi}" 
+                                                        <Label Grid.Row="0"
+                                                               Text="{Binding ProjektiNimi}"
+                                                               FontSize="24"
                                                                FontAttributes="Bold"
-                                                               FontSize="Medium"
-                                                               Grid.Row="0"/>
+                                                               LineBreakMode="TailTruncation"   
+                                                               MaxLines="1"                     
+                                                               Margin="0,0,0,6"/>
                                                         <!--Ei laiteta kuvausta varmaan tähän näkyviin-->
                                                         <!--<Label Text="{Binding KuvausTeksti}" FontSize="Small" LineBreakMode="TailTruncation"/>-->
 
                                                         <!--Tehtävälista-->
-                                                        <CollectionView ItemsSource="{Binding NakymanTehtavat}"
+                                                        <CollectionView ItemsSource="{Binding Tehtavat}"
                                                                         Grid.Row="1"
                                                                         HeightRequest="150">
                                                             <CollectionView.ItemTemplate>
                                                                 <DataTemplate>
                                                                     <HorizontalStackLayout>
                                                                         <CheckBox IsChecked="{Binding OnValmis, Mode=TwoWay}"
+                                                                                  CheckedChanged="CheckBox_CheckedChanged"
                                                                                   VerticalOptions="Center"
                                                                                   Scale="0.8"/>
                                                                         <Label Text="{Binding TehtavaNimi}"
@@ -121,7 +141,7 @@
                                                         <Grid Grid.Row="2"
                                                               VerticalOptions="End"
                                                               HorizontalOptions="Fill"
-                                                              Margin="0,10,0,0">
+                                                              Margin="0,-15,0,0">
                                                             
                                                             <!-- Valmius vasemmalle -->
                                                             <Label Text="{Binding ValmiusTeksti}"

@@ -12,7 +12,9 @@ namespace DeadlineTracker.Models
     public class Project : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
-        public int ProjektiId { get; set; }
+        void OnPropertyChanged(string n) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(n));
+
+        public long ProjektiId { get; set; }
         public string? ProjektiNimi { get; set; }
         public string? KuvausTeksti { get; set; }
         public DateTime Alkupvm { get; set; }
@@ -22,23 +24,32 @@ namespace DeadlineTracker.Models
 
         public ObservableCollection<Tehtava> Tehtavat { get; set; } = new();
 
-        //lisää projekti nappulaa varten
+        // 0/0 -laskurit tulevat palvelusta
+        public int DoneCount { get; set; }
+        public int TotalCount { get; set; }
+        public string ValmiusTeksti => $"{DoneCount}/{TotalCount}";
+
+        // UI:ssä nappikortti
         public bool IsAddButton { get; set; } = false;
 
-        //Valmiusaste tekstinä, x/x
-        public string ValmiusTeksti => $"{Tehtavat.Count(t => t.OnValmis)}/{Tehtavat.Count}";
+        // apu: korvaa kortin “keskeneräiset”
+        public void ReplaceOpenTasks(System.Collections.Generic.IEnumerable<Tehtava> openTasks)
+        {
+            Tehtavat.Clear();
+            foreach (var t in openTasks)
+            {
+                t.ProjektiId = (int)ProjektiId; // jos Tehtävässä on int
+                Tehtavat.Add(t);
+            }
+            OnPropertyChanged(nameof(Tehtavat));
+            OnPropertyChanged(nameof(ValmiusTeksti));
+        }
 
-        //Vain kortilla näytettävät (keskeneröiset) tehtävät
-        public IEnumerable<Tehtava> NakymanTehtavat => Tehtavat.Where(t => !t.OnValmis);
+        // kun halutaan päivittää näyttötekstejä manuaalisesti
         public void PaivitaValmiusJaNakyma()
         {
             OnPropertyChanged(nameof(ValmiusTeksti));
-            OnPropertyChanged(nameof(NakymanTehtavat));
+            OnPropertyChanged(nameof(Tehtavat));
         }
-        protected void OnPropertyChanged([CallerMemberName] string? name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
     }
 }

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace DeadlineTracker.ViewModels
 {
@@ -23,49 +24,79 @@ namespace DeadlineTracker.ViewModels
         {
             _service = new ProjectService(AuthService.ConnectionString);
         }
-        public async Task LoadProjectsAsync(int userId)
+
+        // Näytä omat projektit / näytä kaikki MVVM
+        public bool ShowAll { get => _showAll; set { _showAll = value; OnPropertyChanged(); OnPropertyChanged(nameof(ToggleAllText)); } }
+        private bool _showAll;
+
+        public string ToggleAllText => ShowAll ? "Näytä omat" : "Näytä kaikki";
+
+        public ICommand ToggleAllCommand => new Command(async () =>
         {
-            var projects = await _service.GetProjectsForUserAsync(userId, includeCompletedTasks: true);
+            ShowAll = !ShowAll;
+            await LoadProjectsAsync(Session.CurrentUserId, force: true, all: ShowAll);
+        });
 
-            // Jos ei ole vielä ladattu mitään, alustetaan lista
-            if (Projects.Count == 0)
+        public async Task LoadProjectsAsync(int userId, bool force = false, bool all = false)
+        {
+            var rows = await _service.GetDashboardProjectsAsync(all ? (int?)null : userId);
+
+            var addBtn = Projects.FirstOrDefault(p => p.IsAddButton);
+            if (force) Projects.Clear();
+            if (addBtn != null) Projects.Remove(addBtn);
+
+            // poista kadonneet
+            var toRemove = Projects.Where(p => !p.IsAddButton && !rows.Any(x => x.Id == p.ProjektiId)).ToList();
+            foreach (var r in toRemove) Projects.Remove(r);
+
+            foreach (var r in rows)
             {
-                foreach (var p in projects)
-                    Projects.Add(p);
-
-                Projects.Add(new Project { IsAddButton = true });
-            }
-            else
-            {
-                // Päivitä olemassa oleva kokoelma ilman että UI:n bindingit katkeavat
-                var addBtn = Projects.FirstOrDefault(p => p.IsAddButton);
-                if (addBtn != null)
-                    Projects.Remove(addBtn);
-
-                // Lisää uudet vain jos eivät jo ole listassa
-                foreach (var p in projects)
+                var existing = Projects.FirstOrDefault(p => (long)p.ProjektiId == r.Id);
+                if (existing == null)
                 {
-                    if (!Projects.Any(existing => existing.ProjektiId == p.ProjektiId))
-                        Projects.Add(p);
+                    existing = new Project
+                    {
+                        ProjektiId = r.Id,
+                        ProjektiNimi = r.Name,
+                        Loppupvm = r.EndDate,
+                        DoneCount = r.DoneCount,
+                        TotalCount = r.TotalCount
+                    };
+                    existing.ReplaceOpenTasks(r.OpenTasks);
+                    Projects.Add(existing);
+                }
+                else
+                {
+                    existing.ProjektiNimi = r.Name;
+                    existing.Loppupvm = r.EndDate;
+                    existing.DoneCount = r.DoneCount;
+                    existing.TotalCount = r.TotalCount;
+                    existing.ReplaceOpenTasks(r.OpenTasks);
                 }
 
-                // Lisää "lisää projekti" -nappi takaisin loppuun
-                Projects.Add(new Project { IsAddButton = true });
+                existing.PaivitaValmiusJaNakyma();
             }
+
+            Projects.Add(addBtn ?? new Project { IsAddButton = true });
         }
         public async Task CompleteTaskAsync(Tehtava task)
         {
-            if (task == null)
-                return;
+            if (task == null) return;
 
-            bool success = await _service.MarkTaskDoneAsync(task.TehtavaId);
-            if (success)
+            if (await _service.MarkTaskDoneAsync(task.TehtavaId))
             {
-                task.OnValmis = true;
-                var project = Projects.FirstOrDefault(p => p.ProjektiId == task.ProjektiId);
-                project?.PaivitaValmiusJaNakyma();
+                // päivitä UI heti: poista kortin keskeneräisistä ja nosta 0/0
+                var proj = Projects.FirstOrDefault(p => p.ProjektiId == task.ProjektiId);
+                if (proj != null)
+                {
+                    var item = proj.Tehtavat.FirstOrDefault(t => t.TehtavaId == task.TehtavaId);
+                    if (item != null) proj.Tehtavat.Remove(item); // poista kortista
+                    proj.DoneCount++;                              // nosta 0/0
+                    proj.PaivitaValmiusJaNakyma();
+                }
             }
         }
+
         public void AddNewProject(Project newProject)
         {
             // UI päivitys tehdään täällä, jotta lisää nappi näkyy oikeassa paikassa
