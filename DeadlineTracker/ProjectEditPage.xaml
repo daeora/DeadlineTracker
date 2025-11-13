@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
-    x:Class="DeadlineTracker.ProjectCreatePage"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Projektin luonti">
-
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DeadlineTracker.ProjectEditPage"
+             Title="Muokkaa projektia">
+    
     <ContentPage.Resources>
         <ResourceDictionary>
             <!-- Tyylit -->
@@ -23,12 +22,12 @@
 
     <ScrollView>
         <Grid Padding="20"
-              RowSpacing="16"
-              RowDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto"
-              ColumnDefinitions="*">
+          RowSpacing="16"
+          RowDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto"
+          ColumnDefinitions="*">
 
             <!-- Otsikko -->
-            <Label Grid.Row="0" Text="Projektin luonti" FontSize="24" FontAttributes="Bold" />
+            <Label Grid.Row="0" Text="Muokkaa projektia" FontSize="24" FontAttributes="Bold" />
 
             <!-- Projektin nimi -->
             <Grid Grid.Row="1" RowDefinitions="Auto,Auto">
@@ -83,6 +82,7 @@
                                         <!-- Deadline -->
                                         <DatePicker Grid.Row="0" Grid.Column="2"
                                                     Date="{Binding DueDate}"
+                                                    HorizontalOptions="End"
                                                     DateSelected="TaskDueDate_DateSelected" />
 
                                         <!-- Poista tehtävärivi -->
@@ -96,15 +96,15 @@
                                             <!-- valitut assigneet "tageina" -->
                                             <HorizontalStackLayout Spacing="6">
                                                 <HorizontalStackLayout
-                                                    BindableLayout.ItemsSource="{Binding Assignees}">
+                                                BindableLayout.ItemsSource="{Binding Assignees}">
                                                     <BindableLayout.ItemTemplate>
                                                         <DataTemplate>
                                                             <Frame Padding="6,2" CornerRadius="12" HasShadow="False" BackgroundColor="#333">
                                                                 <Grid ColumnDefinitions="Auto,Auto" ColumnSpacing="6">
                                                                     <Label Text="{Binding FullName}" TextColor="White"/>
                                                                     <Button Grid.Column="1" Text="X" WidthRequest="16" HeightRequest="16"
-                                                                                 BackgroundColor="Transparent" Padding="0"
-                                                                                 Clicked="TaskRemoveAssignee_Clicked"/>
+                                                                                BackgroundColor="Transparent" Padding="0"
+                                                                                Clicked="TaskRemoveAssignee_Clicked"/>
                                                                 </Grid>
                                                             </Frame>
                                                         </DataTemplate>
@@ -114,13 +114,13 @@
 
                                             <!-- hakuentry -->
                                             <Entry Grid.Row="1"
-                                                   Placeholder="Lisää vastuuhenkilö…"
-                                                   Text="{Binding SearchText}"
-                                                   TextChanged="TaskAssigneeSearch_TextChanged"/>
+                                               Placeholder="Lisää vastuuhenkilö…"
+                                               Text="{Binding SearchText}"
+                                               TextChanged="TaskAssigneeSearch_TextChanged"/>
 
                                             <!-- ehdotukset -->
                                             <Frame Grid.Row="2" HasShadow="False" Padding="0"
-                                                   IsVisible="{Binding AreUserSuggestionsVisible}">
+                                               IsVisible="{Binding AreUserSuggestionsVisible}">
                                                 <CollectionView ItemsSource="{Binding FilteredUsers}"
                                                                 SelectionMode="Single"
                                                                 SelectionChanged="TaskAssigneeSuggestion_SelectionChanged"
@@ -174,18 +174,18 @@
                                 <Grid Padding="8,6" RowDefinitions="Auto,Auto" RowSpacing="8">
                                     <!-- Hakukenttä -->
                                     <Entry x:Name="ParticipantSearchEntry"
-                                           Placeholder="Hae käyttäjää nimellä..."
-                                           TextChanged="ParticipantSearchEntry_TextChanged" 
-                                           Unfocused="ParticipantSearch_Unfocused" />      
+                                          Placeholder="Hae käyttäjää nimellä..."
+                                          TextChanged="ParticipantSearchEntry_TextChanged" 
+                                          Unfocused="ParticipantSearch_Unfocused" />
 
                                     <!-- Dropdown-ehdotukset -->
                                     <Frame Grid.Row="1" HasShadow="False" Padding="0"
-                                           IsVisible="{Binding AreUserSuggestionsVisible}">
+                                       IsVisible="{Binding AreUserSuggestionsVisible}">
                                         <CollectionView x:Name="UserSuggestionsView"
-                                                          ItemsSource="{Binding FilteredUsers}"
-                                                          SelectionMode="Single"
-                                                          HeightRequest="180"
-                                                          SelectionChanged="UserSuggestions_SelectionChanged">
+                                                        ItemsSource="{Binding FilteredUsers}"
+                                                        SelectionMode="Single"
+                                                        HeightRequest="180"
+                                                        SelectionChanged="UserSuggestions_SelectionChanged">
                                             <CollectionView.ItemTemplate>
                                                 <DataTemplate>
                                                     <Grid Padding="10">
@@ -203,11 +203,15 @@
 
             </Grid>
 
-            <!-- Alapainikkeet -->
-            <Grid Grid.Row="6" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12">
-                <Label />
-                <Button Grid.Column="1" Text="Peruuta" Clicked="Cancel_Clicked" />
-                <Button Grid.Column="2" Text="Tallenna projekti" Clicked="Save_Clicked" />
+            <!-- Alapalkki: Peruuta | Poista projekti | Tallenna muutokset -->
+            <Grid Grid.Row="6" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
+                <Button Grid.Column="0" Text="Peruuta" Clicked="Cancel_Clicked" />
+                <Label Grid.Column="1" />
+                <Button Grid.Column="2" Text="Poista projekti"
+                        BackgroundColor="#b00020" TextColor="White"
+                        Clicked="DeleteProject_Clicked" />
+                <Button Grid.Column="3" Text="Tallenna muutokset"
+                        Clicked="SaveChanges_Clicked" />
             </Grid>
 
         </Grid>

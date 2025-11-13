@@ -70,6 +70,9 @@
 	  <MauiXaml Update="ProjectCreatePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="ProjectEditPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Yleisnakyma.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

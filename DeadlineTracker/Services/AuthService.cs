@@ -15,7 +15,7 @@ namespace DeadlineTracker.Services
         //  - User ID ja Password = paikallisen MySQL-tunnarin tiedot
         //
         private static readonly string _connStr =
-           "Server=localhost;Port=3306;Database=mydb;User ID=root;Password=;";
+           "Server=localhost;Port=3306;Database=mydb;User ID=root;Password=D4e1sB4e;";
 
         // luku-ominaisuus muille
         public static string ConnectionString => _connStr;
