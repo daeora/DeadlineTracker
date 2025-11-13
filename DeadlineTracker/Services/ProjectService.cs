@@ -1,8 +1,11 @@
-﻿using System;
+﻿using DeadlineTracker.Models;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
 
 namespace DeadlineTracker.Services
 {
@@ -172,5 +175,122 @@ namespace DeadlineTracker.Services
                 return Convert.ToInt32(await ins.ExecuteScalarAsync());
             }
         }
+
+        public async Task<List<Project>> GetProjectsForUserAsync(int userId, bool includeCompletedTasks = false)
+        {
+            var projects = new List<Project>();
+
+            using var conn = new MySqlConnection(_connStr);
+            await conn.OpenAsync();
+
+            // Haetaan projektit, joissa käyttäjä on osallistuja
+            const string projectSql = @"
+                SELECT p.projekti_id, p.projektiNimi, p.kuvausTeksti, p.alkupvm, p.loppupvm,
+                       p.luotupvm, p.paivitettypvm
+                FROM projekti p
+                JOIN projekti_osallistuja po ON p.projekti_id = po.projekti_id
+                WHERE po.user_id = @uid
+                ORDER BY p.luotupvm DESC;
+                ";
+
+            using var cmd = new MySqlCommand(projectSql, conn);
+            cmd.Parameters.AddWithValue("@uid", userId);
+
+            using var reader = await cmd.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                var project = new Project
+                {
+                    ProjektiId = reader.GetInt32("projekti_id"),
+                    ProjektiNimi = reader.GetString("projektiNimi"),
+                    KuvausTeksti = reader.IsDBNull("kuvausTeksti") ? "" : reader.GetString("kuvausTeksti"),
+                    Alkupvm = reader.GetDateTime("alkupvm"),
+                    Loppupvm = reader.GetDateTime("loppupvm"),
+                    LuotuPvm = reader.GetDateTime("luotupvm"),
+                    PaivitettyPvm = reader.GetDateTime("paivitettypvm"),
+                    Tehtavat = new ObservableCollection<Tehtava>()
+                };
+                projects.Add(project);
+            }
+
+            reader.Close();
+
+            // Haetaan tehtävät kaikille projekteille
+            if (projects.Any())
+            {
+                string taskSql = @"
+                    SELECT tehtava_id, projekti_id, tehtavaNimi, tehtavaKuvaus, onValmis, luotupvm, erapaiva
+                    FROM tehtava
+                    WHERE projekti_id IN (" + string.Join(",", projects.Select(p => p.ProjektiId)) + @")
+                ";
+
+                if (!includeCompletedTasks)
+                    taskSql += " AND onValmis = 0;";
+
+                using var taskCmd = new MySqlCommand(taskSql, conn);
+                using var taskReader = await taskCmd.ExecuteReaderAsync();
+
+                while (await taskReader.ReadAsync())
+                {
+                    var tehtava = new Tehtava
+                    {
+                        TehtavaId = taskReader.GetInt32("tehtava_id"),
+                        ProjektiId = taskReader.GetInt32("projekti_id"),
+                        TehtavaNimi = taskReader.GetString("tehtavaNimi"),
+                        TehtavaKuvaus = taskReader.IsDBNull("tehtavaKuvaus") ? "" : taskReader.GetString("tehtavaKuvaus"),
+                        OnValmis = taskReader.GetBoolean("onValmis"),
+                        LuotuPvm = taskReader.GetDateTime("luotupvm"),
+                        Erapaiva = taskReader.IsDBNull("erapaiva") ? DateTime.MinValue : taskReader.GetDateTime("erapaiva")
+                    };
+
+                    // Liitetään tehtävä oikeaan projektiin
+                    var proj = projects.FirstOrDefault(p => p.ProjektiId == tehtava.ProjektiId);
+                    proj?.Tehtavat.Add(tehtava);
+
+                    // Kun kaikki tehtävät on liitetty, asetetaan viite projektiin jokaiselle tehtävälle
+                    foreach (var project in projects)
+                    {
+                        foreach (var t in project.Tehtavat)
+                        {
+                            t.ProjektiViite = project;
+                        }
+                    }
+                }
+            }
+
+            return projects;
+        }
+        /// <summary>
+        /// Merkitsee tehtävän valmiiksi (onValmis = 1) tietokannassa.
+        /// Päivittää myös paivitettypvm-kentän nykyhetkeen.
+        /// </summary>
+        /// <param name="taskId">Tehtävän tunnus (tehtava_id)</param>
+        /// <returns>true jos päivitys onnistui, false jos ei löytynyt tehtävää</returns>
+        public async Task<bool> MarkTaskDoneAsync(int taskId)
+        {
+            if (taskId <= 0)
+                throw new ArgumentException("Virheellinen tehtävä-id.", nameof(taskId));
+
+            using var conn = new MySqlConnection(_connStr);
+            await conn.OpenAsync();
+
+            const string sql = @"
+                UPDATE tehtava
+                SET onValmis = 1,
+                    paivitettypvm = NOW()
+                WHERE tehtava_id = @id;
+            ";
+
+            using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@id", taskId);
+
+            int rows = await cmd.ExecuteNonQueryAsync();
+
+            // Palautetaan true jos vähintään yksi rivi päivittyi
+            return rows > 0;
+        }
+
+
     }
 }

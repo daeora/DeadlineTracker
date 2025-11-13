@@ -1,16 +1,20 @@
 using System;
 using Microsoft.Maui.Controls;
 using DeadlineTracker.Services;
+using DeadlineTracker.ViewModels;
+using DeadlineTracker.Models;
 
 namespace DeadlineTracker;
 
 public partial class Yleisnakyma : ContentPage
 {
-
+    private readonly ProjectListViewModel vm;
     // HUOM: nyt EI ole string username parametria!
     public Yleisnakyma()
     {
         InitializeComponent();
+        vm = new ProjectListViewModel();
+        BindingContext = vm;
 
         // asetetaan tervetuloteksti kirjautuneen mukaan
         if (!string.IsNullOrWhiteSpace(Session.CurrentUsername))
@@ -50,5 +54,19 @@ public partial class Yleisnakyma : ContentPage
         // siirry projektin/tehtävän luontiin (ProjectCreatePage)
         await Shell.Current.GoToAsync("ProjectCreate");
     }
-  
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        // ladataan projektit aina kun näkymä tulee näkyviin
+        await vm.LoadProjectsAsync(Session.CurrentUserId);
+    }
+
+    private async void CheckBox_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+        if (sender is CheckBox cb && cb.BindingContext is Tehtava t && e.Value)
+        {
+            await vm.CompleteTaskAsync(t);
+        }
+    }
 }
