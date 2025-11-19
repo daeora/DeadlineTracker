@@ -21,6 +21,7 @@ namespace DeadlineTracker.Models
         public DateTime Loppupvm { get; set; }
         public DateTime LuotuPvm { get; set; }
         public DateTime PaivitettyPvm { get; set; }
+        public bool OnValmis => DoneCount == TotalCount && TotalCount > 0;
 
         public ObservableCollection<Tehtava> Tehtavat { get; set; } = new();
 
