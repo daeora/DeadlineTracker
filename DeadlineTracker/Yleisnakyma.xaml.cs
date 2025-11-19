@@ -77,10 +77,21 @@ public partial class Yleisnakyma : ContentPage
             await Shell.Current.GoToAsync($"ProjectEdit?id={lid}");
     }
 
-    private async void ToggleAll_Clicked(object sender, EventArgs e)
+    //Mikähän tarkoitus tällä oli
+    //private async void ToggleAll_Clicked(object sender, EventArgs e)
+    //{
+    //    vm.ShowAll = !vm.ShowAll;
+    //    await vm.LoadProjectsAsync(Session.CurrentUserId, force: true, all: vm.ShowAll);
+    //}
+
+    private bool _completedVisible = false;
+
+    private void ToggleCompleted_Tapped(object sender, TappedEventArgs e)
     {
-        vm.ShowAll = !vm.ShowAll;
-        await vm.LoadProjectsAsync(Session.CurrentUserId, force: true, all: vm.ShowAll);
+        _completedVisible = !_completedVisible;
+        CompletedList.IsVisible = _completedVisible;
+
+        NuoliIkoni.Text = _completedVisible ? "\uE5CE" : "\uE5CF";
     }
 
 }

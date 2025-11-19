@@ -50,7 +50,7 @@
             <FlexLayout Direction="Row"
                         Wrap="Wrap"
                         JustifyContent="Start"
-                        BindableLayout.ItemsSource="{Binding Projects}">
+                        BindableLayout.ItemsSource="{Binding ActiveProjects}">
 
                 <BindableLayout.ItemTemplate>
                     <DataTemplate>
@@ -169,5 +169,59 @@
                 </BindableLayout.ItemTemplate>
             </FlexLayout>
         </ScrollView>
+        <VerticalStackLayout>
+
+            <!-- Valmiit projektit -->
+            <Grid Padding="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Label Text="Valmiit"
+                       Grid.Column="0"
+                       FontAttributes="Bold"
+                       FontSize="18"
+                       TextColor="Black"
+                       HorizontalOptions="Start" />
+
+                <Label x:Name="NuoliIkoni"
+                       FontFamily="MaterialIcons"
+                       Text="&#xE5CF;"
+                       Grid.Column="1"
+                       FontSize="20"
+                       TextColor="Black"
+                       VerticalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="ToggleCompleted_Tapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
+
+            <!-- VALMIIT PROJEKTIT LISTA -->
+            <CollectionView x:Name="CompletedList"
+                            ItemsSource="{Binding CompletedProjects}"
+                            IsVisible="False">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="10"
+                               Margin="5"
+                               BackgroundColor="#f1f1f1">
+                            <StackLayout>
+                                <Label Text="{Binding ProjektiNimi}"
+                                       FontAttributes="Bold"
+                                       TextColor="Black"/>
+                            </StackLayout>
+
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer CommandParameter="{Binding ProjektiId}"
+                                                      Tapped="OpenProjectEdit_Tapped"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
     </VerticalStackLayout>
 </ContentPage>
