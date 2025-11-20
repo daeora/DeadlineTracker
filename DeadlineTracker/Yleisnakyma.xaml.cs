@@ -94,4 +94,8 @@ public partial class Yleisnakyma : ContentPage
         NuoliIkoni.Text = _completedVisible ? "\uE5CE" : "\uE5CF";
     }
 
+    private async void nappi_Clicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync("Kalenteri");
+    }
 }
