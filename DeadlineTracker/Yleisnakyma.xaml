@@ -41,6 +41,8 @@
                 Padding="10,5"
                 Grid.Column="2"
                 Clicked="LogOut_Clicked"/>
+            
+
         </Grid>
         <Label 
             Text="Yleisnäkymä"

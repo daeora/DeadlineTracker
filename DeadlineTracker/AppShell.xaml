@@ -13,16 +13,17 @@
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="LoginPage" />
 
-    <!-- Päänäkymä kirjautumisen jälkeen -->
+    <!-- Päänäkymä -->
     <ShellContent
         Title="Yleisnäkymä"
         ContentTemplate="{DataTemplate local:Yleisnakyma}"
         Route="Home" />
 
-    <!-- Projektin / tehtävän luonti -->
+    <!-- Uusi projekti -->
     <ShellContent
         Title="Uusi projekti"
         ContentTemplate="{DataTemplate local:ProjectCreatePage}"
         Route="ProjectCreate" />
+
 
 </Shell>
