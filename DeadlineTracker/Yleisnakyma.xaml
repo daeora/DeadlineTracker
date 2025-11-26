@@ -9,9 +9,6 @@
         <ToolbarItem Text="{Binding ToggleAllText}"
                Command="{Binding ToggleAllCommand}"
                Order="Primary"/>
-        <ToolbarItem x:Name="nappi"
-                     Text="nappi"
-                     Clicked="nappi_Clicked"/>
         <!-- (valinnainen) Kirjaudu ulos -nappi jos halutaan tämäkin yläpalkkiin? -->
         <!-- <ToolbarItem Text="Kirjaudu ulos" Clicked="LogOut_Clicked" /> -->
     </ContentPage.ToolbarItems>
