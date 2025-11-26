@@ -30,11 +30,6 @@ public partial class Yleisnakyma : ContentPage
 
     private async void LogOut_Clicked(object sender, EventArgs e)
     {
-        var btn = (Button)sender;
-
-        await btn.ScaleTo(0.9, 80, Easing.CubicOut);
-        await btn.ScaleTo(1.0, 80, Easing.CubicIn);
-
         bool confirm = await DisplayAlert(
             "Vahvistus",
             "Haluatko varmasti kirjautua ulos?",
@@ -84,13 +79,6 @@ public partial class Yleisnakyma : ContentPage
             await Shell.Current.GoToAsync($"ProjectEdit?id={lid}");
     }
 
-    //Mikähän tarkoitus tällä oli
-    //private async void ToggleAll_Clicked(object sender, EventArgs e)
-    //{
-    //    vm.ShowAll = !vm.ShowAll;
-    //    await vm.LoadProjectsAsync(Session.CurrentUserId, force: true, all: vm.ShowAll);
-    //}
-
     private bool _completedVisible = false;
 
     private void ToggleCompleted_Tapped(object sender, TappedEventArgs e)
@@ -100,5 +88,4 @@ public partial class Yleisnakyma : ContentPage
 
         NuoliIkoni.Text = _completedVisible ? "\uE5CE" : "\uE5CF";
     }
-
 }
