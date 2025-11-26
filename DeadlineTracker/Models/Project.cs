@@ -22,6 +22,13 @@ namespace DeadlineTracker.Models
         public DateTime LuotuPvm { get; set; }
         public DateTime PaivitettyPvm { get; set; }
         public bool OnValmis => DoneCount == TotalCount && TotalCount > 0;
+        public bool IsProjectDeadLinePassed
+        {
+            get
+            {
+                return Loppupvm.Date < DateTime.Now.Date;
+            }
+        }
 
         public ObservableCollection<Tehtava> Tehtavat { get; set; } = new();
 
@@ -36,12 +43,17 @@ namespace DeadlineTracker.Models
         // apu: korvaa kortin “keskeneräiset”
         public void ReplaceOpenTasks(System.Collections.Generic.IEnumerable<Tehtava> openTasks)
         {
+            //Tehtävät eräpäivän mukaan nousevaan järjestykseen
+            var sortedTasks = openTasks.OrderBy(t => t.Erapaiva).ToList();
+
             Tehtavat.Clear();
-            foreach (var t in openTasks)
+
+            foreach (var t in sortedTasks)
             {
-                t.ProjektiId = (int)ProjektiId; // jos Tehtävässä on int
+                t.ProjektiId = (int)ProjektiId;
                 Tehtavat.Add(t);
             }
+
             OnPropertyChanged(nameof(Tehtavat));
             OnPropertyChanged(nameof(ValmiusTeksti));
         }
