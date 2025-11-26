@@ -30,9 +30,9 @@
         </Grid>
         <Label 
             Text="Yleisnäkymä"
-            FontSize="28"
-            FontAttributes="Bold"
-            TextColor="Black"
+                   FontSize="28" 
+                   FontAttributes="Bold"
+                   TextColor="Black" 
             HorizontalOptions="Start"/>
 
         <ScrollView>
