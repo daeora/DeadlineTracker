@@ -37,6 +37,13 @@ namespace DeadlineTracker.Models
 
         public DateTime LuotuPvm { get; set; }
         public DateTime Erapaiva { get; set; }
+        public bool IsDeadLinePassed
+        {
+            get
+            {
+                return Erapaiva.Date < DateTime.Now.Date;
+            }
+        }
 
         //Mihin projetkiin tehtävä kuuluu
         public Project? ProjektiViite { get; set; }
@@ -49,5 +56,6 @@ namespace DeadlineTracker.Models
         }
         protected void OnPropertyChanged([CallerMemberName] string? name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
     }
 }

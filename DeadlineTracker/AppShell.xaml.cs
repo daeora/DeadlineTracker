@@ -10,7 +10,6 @@
             Routing.RegisterRoute("ProjectCreate", typeof(ProjectCreatePage));
             // UUSI: muokkaussivu
             Routing.RegisterRoute("ProjectEdit", typeof(ProjectEditPage));
-            Routing.RegisterRoute("Kalenteri", typeof(Kalenteri));
         }
     }
 }

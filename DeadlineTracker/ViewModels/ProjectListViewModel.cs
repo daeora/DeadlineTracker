@@ -103,6 +103,7 @@ namespace DeadlineTracker.ViewModels
                     ActiveProjects.Add(existing);
             }
 
+
             // 5. Varmista että Add Project -kortti on lopussa
             var addBtn = ActiveProjects.FirstOrDefault(p => p.IsAddButton);
             if (addBtn != null)
