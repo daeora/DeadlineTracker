@@ -14,7 +14,7 @@
             >
             
             <Label
-                Text="MiauMiau"
+                Text="Deadline Tracker"
                 FontSize="28"
                 FontAttributes="Bold"
                 HorizontalOptions="Center"
@@ -34,10 +34,11 @@
 
                     <Border Stroke="Black" StrokeShape="RoundRectangle 8" Padding="0">
                         <Entry
-                            Placeholder="Käyttäjätunnus"
+                            Placeholder="🐱 Käyttäjätunnus"
                             HeightRequest="25"
                             TextColor="Black"
                             x:Name="Username"
+                            MaxLength="25"
                             />
 
                     </Border>
