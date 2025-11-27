@@ -133,6 +133,8 @@ public partial class ProjectEditPage : ContentPage, IQueryAttributable
         }
     }
 
+    /* Luonti sivulta jäämistöä, ei tarvita muokkaussivulla. Sallii vain tämän ja tulevat päivät tehtävän deadlineksi.
+    
     private void TaskDueDate_DateSelected(object sender, DateChangedEventArgs e)
     {
         if (sender is DatePicker dp && dp.BindingContext is TaskRow tr)
@@ -140,7 +142,8 @@ public partial class ProjectEditPage : ContentPage, IQueryAttributable
             if (tr.DueDate.HasValue && tr.DueDate.Value.Date < DateTime.Today)
                 tr.DueDate = DateTime.Today;
         }
-    }
+    } 
+    */
 
     private void TaskAssigneeSearch_TextChanged(object sender, TextChangedEventArgs e)
     {
