@@ -82,8 +82,7 @@
                                         <!-- Deadline -->
                                         <DatePicker Grid.Row="0" Grid.Column="2"
                                                     Date="{Binding DueDate}"
-                                                    HorizontalOptions="End"
-                                                    DateSelected="TaskDueDate_DateSelected" />
+                                                    HorizontalOptions="End"/>
 
                                         <!-- Poista tehtävärivi -->
                                         <Button Grid.Row="0" Grid.Column="3"
