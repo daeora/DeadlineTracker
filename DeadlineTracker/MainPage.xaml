@@ -13,7 +13,7 @@
 
             <Label
                 Text="Deadline Tracker"
-                FontSize="28"
+                FontSize="40"
                 FontAttributes="Bold"
                 HorizontalOptions="Center"
                 TextColor="{StaticResource MidnightBlue}" />
@@ -24,7 +24,7 @@
                 HasShadow="True"
                 WidthRequest="320"
                 BackgroundColor="{StaticResource White}"
-                BorderColor="Transparent">
+                BorderColor="{StaticResource Gray200}">
 
                 <VerticalStackLayout Spacing="25">
 
