@@ -20,15 +20,15 @@
             </Grid.ColumnDefinitions>
             <Label 
                 x:Name="TervetuloaTeksti"
-                FontSize="24"
+                FontSize="28"
                 VerticalOptions="Start" 
                 HorizontalOptions="Start"
                 TextColor="{StaticResource MidnightBlue}"
                 Grid.Column="0"/>
         </Grid>
         <Label 
-            Text="Yleisnäkymä"
-            FontSize="28" 
+            Text="Aktiiviset projektit"
+            FontSize="25" 
             FontAttributes="Bold"
             TextColor="{StaticResource MidnightBlue}" 
             HorizontalOptions="Start"/>
@@ -95,9 +95,9 @@
                                     <Setter Property="Content">
                                         <Setter.Value>
                                             <Frame WidthRequest="250"
-                                                   HeightRequest="250"
+                                                   HeightRequest="255"
                                                    Margin="10"
-                                                   BorderColor="Transparent"
+                                                   BorderColor="{StaticResource Gray200}"
                                                    HasShadow="True"
                                                    BackgroundColor="{StaticResource White}"
                                                    CornerRadius="15">
@@ -111,7 +111,7 @@
                                                     <VerticalStackLayout>
                                                         <Label Grid.Row="0"
                                                                Text="{Binding ProjektiNimi}"
-                                                               FontSize="20"
+                                                               FontSize="17"
                                                                FontAttributes="Bold"
                                                                LineBreakMode="TailTruncation"   
                                                                MaxLines="1"                      
@@ -126,8 +126,8 @@
                                                                     <Border Stroke="{StaticResource Gray200}"
                                                                             StrokeThickness="1"
                                                                             StrokeShape="RoundRectangle 8"
-                                                                            Padding="5"
-                                                                            Margin="0,3">
+                                                                            Padding="2"
+                                                                            Margin="0,2">
                                                                         <HorizontalStackLayout>
                                                                             <CheckBox IsChecked="{Binding OnValmis, Mode=TwoWay}"
                                                                                       CheckedChanged="CheckBox_CheckedChanged"
@@ -199,7 +199,6 @@
                 </BindableLayout.ItemTemplate>
             </FlexLayout>
         </ScrollView>
-
         <VerticalStackLayout>
 
             <Grid Padding="10">
@@ -240,99 +239,29 @@
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
                             <Frame WidthRequest="250"
-                                   HeightRequest="250"
+                                   HeightRequest="100"
+                                   Padding="15"
                                    Margin="10"
-                                   BorderColor="Transparent"
-                                   HasShadow="True"
-                                   BackgroundColor="{StaticResource White}"
-                                   CornerRadius="15">
+                                   CornerRadius="15"
+                                   BackgroundColor="#E8F5E9" 
+                                   BorderColor="#A5D6A7"
+                                   HasShadow="False">
 
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer CommandParameter="{Binding ProjektiId}"
                                                           Tapped="OpenProjectEdit_Tapped"/>
                                 </Frame.GestureRecognizers>
 
-                                <Grid RowDefinitions="Auto, *, Auto" Padding="5">
-                                    <VerticalStackLayout>
-                                        <Label Grid.Row="0"
-                                               Text="{Binding ProjektiNimi}"
-                                               FontSize="20"
-                                               FontAttributes="Bold"
-                                               LineBreakMode="TailTruncation"   
-                                               MaxLines="1"                      
-                                               Margin="0,0,0,10"
-                                               TextColor="{StaticResource MidnightBlue}"/>
+                                <VerticalStackLayout VerticalOptions="Center">
+                                    <Label Text="{Binding ProjektiNimi}"
+                                           FontAttributes="Bold"
+                                           TextColor="#1B5E20"
+                                           LineBreakMode="TailTruncation"/>
 
-                                        <CollectionView ItemsSource="{Binding Tehtavat}"
-                                                        Grid.Row="1"
-                                                        HeightRequest="150">
-                                            <CollectionView.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Border Stroke="{StaticResource Gray200}"
-                                                            StrokeThickness="1"
-                                                            StrokeShape="RoundRectangle 8"
-                                                            Padding="5"
-                                                            Margin="0,3">
-                                                        <HorizontalStackLayout>
-                                                            <CheckBox IsChecked="{Binding OnValmis, Mode=TwoWay}"
-                                                                      CheckedChanged="CheckBox_CheckedChanged"
-                                                                      VerticalOptions="Center"
-                                                                      Color="{StaticResource Primary}"
-                                                                      Scale="0.8" />
-
-                                                            <VerticalStackLayout>
-                                                                <Label Text="{Binding TehtavaNimi}"
-                                                                       FontSize="13"
-                                                                       VerticalOptions="Center" 
-                                                                       TextColor="{StaticResource Gray900}"/>
-
-                                                                <Label Text="{Binding Erapaiva, StringFormat='Deadline: {0:dd.MM}'}"
-                                                                       FontSize="11"
-                                                                       TextColor="{StaticResource Gray500}">
-                                                                    <Label.Triggers>
-                                                                        <DataTrigger TargetType="Label"
-                                                                                     Binding="{Binding IsDeadLinePassed}"
-                                                                                     Value="True">
-                                                                            <Setter Property="TextColor"
-                                                                                    Value="Red" />
-                                                                        </DataTrigger>
-                                                                    </Label.Triggers>
-                                                                </Label>
-                                                            </VerticalStackLayout>
-                                                        </HorizontalStackLayout>
-                                                    </Border>
-                                                </DataTemplate>
-                                            </CollectionView.ItemTemplate>
-                                        </CollectionView>
-
-                                        <Grid Grid.Row="2"
-                                              VerticalOptions="End"
-                                              HorizontalOptions="Fill"
-                                              Margin="0,5,0,0">
-
-                                            <Label Text="{Binding ValmiusTeksti}"
-                                                   TextColor="{StaticResource Gray500}"
-                                                   FontSize="12"
-                                                   HorizontalOptions="Start"
-                                                   VerticalOptions="End"/>
-
-                                            <Label Text="{Binding Loppupvm, StringFormat='{0:dd.MM.yyyy}'}"
-                                                   TextColor="{StaticResource Gray500}"
-                                                   FontSize="12"
-                                                   HorizontalOptions="End"
-                                                   VerticalOptions="End">
-                                                <Label.Triggers>
-                                                    <DataTrigger TargetType="Label"
-                                                                 Binding="{Binding IsProjectDeadLinePassed}"
-                                                                 Value="True">
-                                                        <Setter Property="TextColor"
-                                                                Value="Red"/>
-                                                    </DataTrigger>
-                                                </Label.Triggers>
-                                            </Label>
-                                        </Grid>
-                                    </VerticalStackLayout>
-                                </Grid>
+                                    <Label Text="Valmis"
+                                           FontSize="12"
+                                           TextColor="#2E7D32"/>
+                                </VerticalStackLayout>
                             </Frame>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
