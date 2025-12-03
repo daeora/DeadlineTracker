@@ -26,7 +26,7 @@ namespace DeadlineTracker
                 });
 
 #if WINDOWS
-            // 1) Poistetaan Entryjen sininen alaviiva / border
+            // Poistetaan Entryjen sininen alaviiva / border
             Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping(
                 "NoUnderline", (handler, view) =>
                 {
@@ -36,7 +36,7 @@ namespace DeadlineTracker
                     nativeEntry.Style = null;
                 });
 
-            // 2) Muokataan Windows-ikkunan otsikkopalkkia
+            // Muokataan Windows-ikkunan otsikkopalkkia
             builder.ConfigureLifecycleEvents(events =>
             {
                 events.AddWindows(windows =>

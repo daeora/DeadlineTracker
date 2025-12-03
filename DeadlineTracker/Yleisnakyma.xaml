@@ -5,9 +5,11 @@
              BackgroundColor="{StaticResource Secondary}">
     
     <ContentPage.ToolbarItems>
+        <!-- Toggle: kaikki vs omat -->
         <ToolbarItem Text="{Binding ToggleAllText}"
                Command="{Binding ToggleAllCommand}"
                Order="Primary"/>
+        <!-- (valinnainen) Kirjaudu ulos -nappi jos halutaan tämäkin yläpalkkiin? -->
         <ToolbarItem Text="Kirjaudu ulos" Clicked="LogOut_Clicked" />
     </ContentPage.ToolbarItems>
 
@@ -41,6 +43,7 @@
 
                 <BindableLayout.ItemTemplate>
                     <DataTemplate>
+                        <!-- Näytetään eri sisältö riippuen IsAddButton-arvosta, nappi on yhden projektikortin paikalla siis -->
                         <ContentView>
                             <ContentView.Triggers>
 
@@ -59,7 +62,7 @@
                                                     BackgroundColor="Transparent"
                                                     VerticalOptions="Center"
                                                     HorizontalOptions="Center">
-
+                                                
                                                 <Border.GestureRecognizers>
                                                     <TapGestureRecognizer Tapped="AddProject_Clicked"/>
                                                 </Border.GestureRecognizers>
@@ -99,6 +102,7 @@
                                                    BackgroundColor="{StaticResource White}"
                                                    CornerRadius="15">
 
+                                                <!-- Tunnistaa kehyksen klikkauksen ja välittää projekti ID:n Project.cs:stä-->
                                                 <Frame.GestureRecognizers>
                                                     <TapGestureRecognizer Tapped="OpenProjectEdit_Tapped"
                                                                           CommandParameter="{Binding ProjektiId}" />
@@ -114,7 +118,10 @@
                                                                MaxLines="1"                      
                                                                Margin="0,0,0,10"
                                                                TextColor="{StaticResource MidnightBlue}"/>
+                                                        <!--Ei laiteta kuvausta varmaan tähän näkyviin-->
+                                                        <!--<Label Text="{Binding KuvausTeksti}" FontSize="Small" LineBreakMode="TailTruncation"/>-->
 
+                                                        <!--Tehtävälista-->
                                                         <CollectionView ItemsSource="{Binding Tehtavat}"
                                                                         Grid.Row="1"
                                                                         HeightRequest="150">
@@ -157,18 +164,20 @@
                                                             </CollectionView.ItemTemplate>
                                                         </CollectionView>
 
-
+                                                        <!-- Alapalkki: valmius vasemmalle, loppupvm oikealle -->
                                                         <Grid Grid.Row="2"
                                                               VerticalOptions="End"
                                                               HorizontalOptions="Fill"
                                                               Margin="0,5,0,0">
 
+                                                            <!-- Valmius vasemmalle -->
                                                             <Label Text="{Binding ValmiusTeksti}"
                                                                    TextColor="{StaticResource Gray500}"
                                                                    FontSize="12"
                                                                    HorizontalOptions="Start"
                                                                    VerticalOptions="End"/>
 
+                                                            <!-- Loppupäivä oikealle -->
                                                             <Label Text="{Binding Loppupvm, StringFormat='{0:dd.MM.yyyy}'}"
                                                                    TextColor="{StaticResource Gray500}"
                                                                    FontSize="12"
@@ -198,6 +207,7 @@
         </ScrollView>
         <VerticalStackLayout>
 
+            <!-- Valmiit projektit -->
             <Grid Padding="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -225,6 +235,7 @@
                 </Label>
             </Grid>
 
+            <!-- VALMIIT PROJEKTIT LISTA -->
             <ScrollView Orientation="Vertical" VerticalScrollBarVisibility="Never">
                 <FlexLayout x:Name="CompletedList"
                             BindableLayout.ItemsSource="{Binding CompletedProjects}"
