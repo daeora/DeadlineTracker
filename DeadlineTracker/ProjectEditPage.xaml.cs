@@ -115,8 +115,13 @@ public partial class ProjectEditPage : ContentPage, IQueryAttributable
 
     // -------- TEHTƒVƒT: lis‰ys/poisto + deadline + assignee-haku --------
 
-    private void AddTask_Clicked(object sender, EventArgs e)
+    private async void AddTask_Clicked(object sender, EventArgs e)
     {
+        var btn = (Button)sender;
+
+        await btn.ScaleTo(0.9, 80, Easing.CubicOut);
+        await btn.ScaleTo(1.0, 80, Easing.CubicIn);
+
         var text = NewTaskEntry?.Text?.Trim();
         if (string.IsNullOrWhiteSpace(text)) return;
 
@@ -126,6 +131,11 @@ public partial class ProjectEditPage : ContentPage, IQueryAttributable
 
     private async void DeleteTask_Clicked(object sender, EventArgs e)
     {
+        var btn = (Button)sender;
+
+        await btn.ScaleTo(0.9, 80, Easing.CubicOut);
+        await btn.ScaleTo(1.0, 80, Easing.CubicIn);
+
         if ((sender as Element)?.BindingContext is TaskRow row)
         {
             var ok = await DisplayAlert("Poista teht‰v‰", "Poistetaanko?", "Poista", "Peruuta");
@@ -156,14 +166,28 @@ public partial class ProjectEditPage : ContentPage, IQueryAttributable
 
             if (q.Length >= 1)
             {
-                // Ehdotukset vain projektin osallistujista
-                var pool = Participants
-                    .Where(p => p.UserId.HasValue)
-                    .Select(p => new UserDto { Id = p.UserId!.Value, Name = p.FullName })
+                // 1. Ker‰‰ talteen ne ID:t, jotka on JO lis‰tty t‰h‰n nimenomaiseen teht‰v‰‰n
+                var existingIds = tr.Assignees
+                    .Where(a => a.UserId.HasValue)
+                    .Select(a => a.UserId.Value)
                     .ToList();
 
-                foreach (var u in pool.Where(u => u.Name.Contains(q, StringComparison.OrdinalIgnoreCase)))
+                // 2. K‰y l‰pi projektin osallistujat
+                var pool = Participants
+                    .Where(p => p.UserId.HasValue)
+                    .Select(p => new UserDto { Id = p.UserId!.Value, Name = p.FullName });
+
+                // 3. Suodata: 
+                //    - Nimi t‰sm‰‰ hakuun
+                //    - JA henkilˆn ID ei lˆydy 'existingIds' listalta
+                var matches = pool.Where(u =>
+                    u.Name.Contains(q, StringComparison.OrdinalIgnoreCase) &&
+                    !existingIds.Contains(u.Id));
+
+                foreach (var u in matches)
+                {
                     tr.FilteredUsers.Add(u);
+                }
 
                 tr.AreUserSuggestionsVisible = tr.FilteredUsers.Count > 0;
             }
@@ -188,10 +212,21 @@ public partial class ProjectEditPage : ContentPage, IQueryAttributable
                 tr.AreUserSuggestionsVisible = false;
                 tr.SearchText = "";
 
+                // --- KORJATTU ENTRY-KENTƒN HAKU UUDESSA HIERARKIASSA ---
+                // UI-puu on nyt: Grid -> Border -> Entry
+                // CollectionView on Frame:n sis‰ll‰, joka on Gridin rivill‰ 1.
+
+                // Haetaan Grid (joka on CollectionView:n (Frame) parent)
                 if (cv.Parent is Frame f && f.Parent is Grid g)
                 {
-                    var entry = g.Children.OfType<Entry>().FirstOrDefault();
-                    if (entry != null) entry.Text = "";
+                    // Etsit‰‰n Gridin lapsista Border-elementti‰
+                    var border = g.Children.OfType<Border>().FirstOrDefault();
+
+                    // Jos Border lˆytyy ja sen sis‰ltˆ on Entry
+                    if (border != null && border.Content is Entry entry)
+                    {
+                        entry.Text = "";
+                    }
                 }
             }
             cv.SelectedItem = null;
@@ -258,12 +293,16 @@ public partial class ProjectEditPage : ContentPage, IQueryAttributable
             ParticipantSearchEntry.Text = "";
             AreUserSuggestionsVisible = false;
             OnPropertyChanged(nameof(AreUserSuggestionsVisible));
-            ParticipantSearchEntry.Unfocus();
         }
     }
 
     private async void DeleteParticipant_Clicked(object sender, EventArgs e)
     {
+        var btn = (Button)sender;
+
+        await btn.ScaleTo(0.9, 80, Easing.CubicOut);
+        await btn.ScaleTo(1.0, 80, Easing.CubicIn);
+
         if ((sender as Element)?.BindingContext is MemberRow row)
         {
             var ok = await DisplayAlert("Poista osallistuja",
@@ -277,6 +316,11 @@ public partial class ProjectEditPage : ContentPage, IQueryAttributable
 
     private async void SaveChanges_Clicked(object sender, EventArgs e)
     {
+        var btn = (Button)sender;
+
+        await btn.ScaleTo(0.9, 80, Easing.CubicOut);
+        await btn.ScaleTo(1.0, 80, Easing.CubicIn);
+
         try
         {
             var name = NameEntry.Text?.Trim() ?? "";
@@ -322,6 +366,11 @@ public partial class ProjectEditPage : ContentPage, IQueryAttributable
 
     private async void DeleteProject_Clicked(object sender, EventArgs e)
     {
+        var btn = (Button)sender;
+
+        await btn.ScaleTo(0.9, 80, Easing.CubicOut);
+        await btn.ScaleTo(1.0, 80, Easing.CubicIn);
+
         var ok = await DisplayAlert("Poista projekti", "Poistetaanko projekti pysyv‰sti?", "Poista", "Peruuta");
         if (!ok) return;
 
@@ -338,5 +387,11 @@ public partial class ProjectEditPage : ContentPage, IQueryAttributable
     }
 
     private async void Cancel_Clicked(object sender, EventArgs e)
-        => await Shell.Current.GoToAsync("..");
+    {
+        var btn = (Button)sender;
+
+        await btn.ScaleTo(0.9, 80, Easing.CubicOut);
+        await btn.ScaleTo(1.0, 80, Easing.CubicIn);
+        await Shell.Current.GoToAsync("..");
+    }
 }

@@ -50,7 +50,8 @@ public partial class Yleisnakyma : ContentPage
 
     private async void AddProject_Clicked(object sender, EventArgs e)
     {
-
+        // Animoidaan nappia (sender)
+        await AnimateClick((VisualElement)sender);
         // siirry projektin/tehtävän luontiin (ProjectCreatePage)
         await Shell.Current.GoToAsync("ProjectCreate");
     }
@@ -73,6 +74,9 @@ public partial class Yleisnakyma : ContentPage
     // avataan projektin muokkausnäkymä kun projektikorttia napautetaan
     private async void OpenProjectEdit_Tapped(object sender, TappedEventArgs e)
     {
+        // Animoidaan korttia (Frame tai Border)
+        await AnimateClick((VisualElement)sender);
+
         if (e.Parameter is int iid)
             await Shell.Current.GoToAsync($"ProjectEdit?id={iid}");
         else if (e.Parameter is long lid)
@@ -88,4 +92,16 @@ public partial class Yleisnakyma : ContentPage
 
         NuoliIkoni.Text = _completedVisible ? "\uE5CE" : "\uE5CF";
     }
+
+    // Apufunktio animaatiolle: Pienentää elementtiä 5% ja palauttaa sen
+    private async Task AnimateClick(VisualElement element)
+    {
+        if (element == null) return;
+
+        // Pienennetään 0.95-kertaiseksi 100 millisekunnissa
+        await element.ScaleTo(0.95, 100, Easing.CubicOut);
+        // Palautetaan kokoon 1.0 100 millisekunnissa
+        await element.ScaleTo(1.0, 100, Easing.CubicIn);
+    }
+
 }
