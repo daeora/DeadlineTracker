@@ -75,8 +75,13 @@ public partial class ProjectCreatePage : ContentPage
     // TEHTÄVÄT (lisäys/poisto + per-tehtävä assignee-haku ja eräpäivälogiikka)
     // -------------------------------------------------------------------------
 
-    private void AddTask_Clicked(object sender, EventArgs e)
+    private async void AddTask_Clicked(object sender, EventArgs e)
     {
+        var btn = (Button)sender;
+
+        await btn.ScaleTo(0.9, 80, Easing.CubicOut);
+        await btn.ScaleTo(1.0, 80, Easing.CubicIn);
+
         var text = NewTaskEntry?.Text?.Trim();
         if (string.IsNullOrWhiteSpace(text)) return;
         Tasks.Add(new TaskRow { Title = text, Done = false });
@@ -85,6 +90,11 @@ public partial class ProjectCreatePage : ContentPage
 
     private async void DeleteTask_Clicked(object sender, EventArgs e)
     {
+        var btn = (Button)sender;
+
+        await btn.ScaleTo(0.9, 80, Easing.CubicOut);
+        await btn.ScaleTo(1.0, 80, Easing.CubicIn);
+
         if ((sender as Element)?.BindingContext is TaskRow row)
         {
             var ok = await DisplayAlert("Poista tehtävä",
@@ -99,6 +109,7 @@ public partial class ProjectCreatePage : ContentPage
     // Näytä ehdotukset vain kun on tekstiä
     private void ParticipantSearchEntry_TextChanged(object sender, TextChangedEventArgs e)
     {
+
         var q = (e.NewTextValue ?? "").Trim();
         FilteredUsers.Clear();
 
@@ -141,15 +152,19 @@ public partial class ProjectCreatePage : ContentPage
 
             // Reset UI, tyhjentää kentän ja piilottaa ehdotukset
             ((CollectionView)sender).SelectedItem = null;
-            ParticipantSearchEntry.Text = "";
+            ParticipantSearchEntry.Text = string.Empty;
             AreUserSuggestionsVisible = false;
             OnPropertyChanged(nameof(AreUserSuggestionsVisible));
-            ParticipantSearchEntry.Unfocus();
         }
     }
     // ----- Osallistujan poisto -----
     private async void DeleteParticipant_Clicked(object sender, EventArgs e)
     {
+        var btn = (Button)sender;
+
+        await btn.ScaleTo(0.9, 80, Easing.CubicOut);
+        await btn.ScaleTo(1.0, 80, Easing.CubicIn);
+
         if ((sender as Element)?.BindingContext is MemberRow row)
         {
             var ok = await DisplayAlert("Poista osallistuja",
@@ -182,18 +197,31 @@ public partial class ProjectCreatePage : ContentPage
 
             if (q.Length >= 1)
             {
-                // Hae vain projektin osallistujista (jo lisätyt Participants, oli hölmöä hakea koko tietokanta) 
-                var pool = Participants
-                    .Where(p => p.UserId.HasValue)
-                    .Select(p => new UserDto { Id = p.UserId!.Value, Name = p.FullName })
+                // 1. Kerää talteen ne ID:t, jotka on JO lisätty tähän nimenomaiseen tehtävään
+                var existingIds = tr.Assignees
+                    .Where(a => a.UserId.HasValue)
+                    .Select(a => a.UserId.Value)
                     .ToList();
 
-                foreach (var u in pool.Where(u => u.Name.Contains(q, StringComparison.OrdinalIgnoreCase)))
+                // 2. Käy läpi projektin osallistujat
+                var pool = Participants
+                    .Where(p => p.UserId.HasValue)
+                    .Select(p => new UserDto { Id = p.UserId!.Value, Name = p.FullName });
+
+                // 3. Suodata: 
+                //    - Nimi täsmää hakuun
+                //    - JA henkilön ID ei löydy 'existingIds' listalta
+                var matches = pool.Where(u =>
+                    u.Name.Contains(q, StringComparison.OrdinalIgnoreCase) &&
+                    !existingIds.Contains(u.Id));
+
+                foreach (var u in matches)
+                {
                     tr.FilteredUsers.Add(u);
+                }
 
                 tr.AreUserSuggestionsVisible = tr.FilteredUsers.Count > 0;
             }
-
             else
             {
                 tr.AreUserSuggestionsVisible = false;
@@ -207,26 +235,43 @@ public partial class ProjectCreatePage : ContentPage
         {
             if (e.CurrentSelection?.FirstOrDefault() is UserDto u)
             {
+
+                // Lisätään henkilö listaan, jos ei jo ole
                 if (!tr.Assignees.Any(a => a.UserId == u.Id))
                     tr.Assignees.Add(new MemberRow { UserId = u.Id, FullName = u.Name });
 
-                // reset dropdown
+                // Resetoidaan datamalli
                 tr.FilteredUsers.Clear();
                 tr.AreUserSuggestionsVisible = false;
                 tr.SearchText = "";
-                // tyhjennetään myös Entry kenttä:
+
+                // --- KORJATTU ENTRY-KENTÄN TYHJENNYS ---
+                // Nyt etsitään Gridistä Border, ja Borderin sisältä Entry
                 if (cv.Parent is Frame f && f.Parent is Grid g)
                 {
-                    var entry = g.Children.OfType<Entry>().FirstOrDefault();
-                    if (entry != null) entry.Text = "";
+                    // Etsi Border-elementti Gridin lapsista
+                    var border = g.Children.OfType<Border>().FirstOrDefault();
+
+                    // Jos Border löytyy ja sen sisältö on Entry, tyhjennä se
+                    if (border != null && border.Content is Entry entry)
+                    {
+                        entry.Text = string.Empty;
+                        entry.Unfocus(); // Valinnainen: piilottaa näppäimistön
+                    }
                 }
+                // ----------------------------------------
             }
             cv.SelectedItem = null;
         }
     }
 
-    private void TaskRemoveAssignee_Clicked(object sender, EventArgs e)
+    private async void TaskRemoveAssignee_Clicked(object sender, EventArgs e)
     {
+        var btn = (Button)sender;
+
+        await btn.ScaleTo(0.9, 80, Easing.CubicOut);
+        await btn.ScaleTo(1.0, 80, Easing.CubicIn);
+
         if (sender is Element el && el.BindingContext is MemberRow mr)
         {
             // etsi rivin TaskRow
@@ -239,6 +284,11 @@ public partial class ProjectCreatePage : ContentPage
     // ----- TALLENNUS / PERUUTA -----
     private async void Save_Clicked(object sender, EventArgs e)
     {
+        var btn = (Button)sender;
+
+        await btn.ScaleTo(0.9, 80, Easing.CubicOut);
+        await btn.ScaleTo(1.0, 80, Easing.CubicIn);
+
         try
         {
             var name = NameEntry.Text?.Trim() ?? "";
@@ -290,7 +340,15 @@ public partial class ProjectCreatePage : ContentPage
     }
 
     private async void Cancel_Clicked(object sender, EventArgs e)
-        => await Shell.Current.GoToAsync("..");
+    {
+        var btn = (Button)sender;
+
+        await btn.ScaleTo(0.9, 80, Easing.CubicOut);
+        await btn.ScaleTo(1.0, 80, Easing.CubicIn);
+
+        await Shell.Current.GoToAsync("..");
+    }
+    
 }
 
 // ------- rivamallit -------

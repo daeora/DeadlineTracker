@@ -2,8 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DeadlineTracker.Yleisnakyma"
-             BackgroundColor="#F5F5F5">
-
+             BackgroundColor="{StaticResource Secondary}">
+    
     <ContentPage.ToolbarItems>
         <!-- Toggle: kaikki vs omat -->
         <ToolbarItem Text="{Binding ToggleAllText}"
@@ -22,17 +22,17 @@
             </Grid.ColumnDefinitions>
             <Label 
                 x:Name="TervetuloaTeksti"
-                FontSize="24"
+                FontSize="28"
                 VerticalOptions="Start" 
                 HorizontalOptions="Start"
-                TextColor="Black"
+                TextColor="{StaticResource MidnightBlue}"
                 Grid.Column="0"/>
         </Grid>
         <Label 
-            Text="Yleisnäkymä"
-                   FontSize="28" 
-                   FontAttributes="Bold"
-                   TextColor="Black" 
+            Text="Aktiiviset projektit"
+            FontSize="25" 
+            FontAttributes="Bold"
+            TextColor="{StaticResource MidnightBlue}" 
             HorizontalOptions="Start"/>
 
         <ScrollView>
@@ -46,35 +46,45 @@
                         <!-- Näytetään eri sisältö riippuen IsAddButton-arvosta, nappi on yhden projektikortin paikalla siis -->
                         <ContentView>
                             <ContentView.Triggers>
+
                                 <DataTrigger TargetType="ContentView"
                                              Binding="{Binding IsAddButton}"
                                              Value="True">
                                     <Setter Property="Content">
                                         <Setter.Value>
-                                            <Frame WidthRequest="260"
-                                                   HeightRequest="250"
-                                                   Margin="10"
-                                                   BorderColor="Transparent"
-                                                   CornerRadius="12"
-                                                   BackgroundColor="#f5f5f5"
-                                                   VerticalOptions="Center"
-                                                   HorizontalOptions="Center">
+                                            <Border WidthRequest="250"
+                                                    HeightRequest="255"
+                                                    Margin="10"
+                                                    Stroke="{StaticResource PrimaryBrush}"
+                                                    StrokeThickness="2"
+                                                    StrokeDashArray="5,5"
+                                                    StrokeShape="RoundRectangle 12"
+                                                    BackgroundColor="Transparent"
+                                                    VerticalOptions="Center"
+                                                    HorizontalOptions="Center">
+                                                
+                                                <Border.GestureRecognizers>
+                                                    <TapGestureRecognizer Tapped="AddProject_Clicked"/>
+                                                </Border.GestureRecognizers>
+
                                                 <VerticalStackLayout VerticalOptions="Center"
-                                                                     HorizontalOptions="Center">
-                                                    <Button x:Name="AddProject"
-                                                            Text="+"
-                                                            FontSize="40"
-                                                            WidthRequest="80"
-                                                            HeightRequest="80"
-                                                            CornerRadius="10"
-                                                            HorizontalOptions="Center"
-                                                            VerticalOptions="Center"
-                                                            BackgroundColor="Transparent"
-                                                            BorderColor="Black"
-                                                            BorderWidth="2"
-                                                            Clicked="AddProject_Clicked"/>
+                                                                     HorizontalOptions="Center"
+                                                                     Spacing="5"
+                                                                     InputTransparent="True">
+                                                    <Label Text="+"
+                                                           FontSize="60"
+                                                           TextColor="{StaticResource Primary}"
+                                                           HorizontalOptions="Center"
+                                                           VerticalOptions="Center"
+                                                           Margin="0,-10,0,0"/>
+                                                    <Label Text="Luo uusi projekti"
+                                                           TextColor="{StaticResource Primary}"
+                                                           FontSize="16"
+                                                           FontAttributes="Bold"
+                                                           HorizontalOptions="Center"/>
+
                                                 </VerticalStackLayout>
-                                            </Frame>
+                                            </Border>
                                         </Setter.Value>
                                     </Setter>
                                 </DataTrigger>
@@ -85,26 +95,29 @@
                                     <Setter Property="Content">
                                         <Setter.Value>
                                             <Frame WidthRequest="250"
-                                                   HeightRequest="250"
+                                                   HeightRequest="255"
                                                    Margin="10"
-                                                   BorderColor="LightGray"
-                                                   CornerRadius="12">
-                                                
+                                                   BorderColor="{StaticResource Gray200}"
+                                                   HasShadow="True"
+                                                   BackgroundColor="{StaticResource White}"
+                                                   CornerRadius="15">
+
                                                 <!-- Tunnistaa kehyksen klikkauksen ja välittää projekti ID:n Project.cs:stä-->
                                                 <Frame.GestureRecognizers>
                                                     <TapGestureRecognizer Tapped="OpenProjectEdit_Tapped"
                                                                           CommandParameter="{Binding ProjektiId}" />
                                                 </Frame.GestureRecognizers>
 
-                                                <Grid RowDefinitions="Auto, *, Auto" Padding="8">
+                                                <Grid RowDefinitions="Auto, *, Auto" Padding="5">
                                                     <VerticalStackLayout>
                                                         <Label Grid.Row="0"
                                                                Text="{Binding ProjektiNimi}"
-                                                               FontSize="24"
+                                                               FontSize="17"
                                                                FontAttributes="Bold"
                                                                LineBreakMode="TailTruncation"   
-                                                               MaxLines="1"                     
-                                                               Margin="0,0,0,6"/>
+                                                               MaxLines="1"                      
+                                                               Margin="0,0,0,10"
+                                                               TextColor="{StaticResource MidnightBlue}"/>
                                                         <!--Ei laiteta kuvausta varmaan tähän näkyviin-->
                                                         <!--<Label Text="{Binding KuvausTeksti}" FontSize="Small" LineBreakMode="TailTruncation"/>-->
 
@@ -114,49 +127,59 @@
                                                                         HeightRequest="150">
                                                             <CollectionView.ItemTemplate>
                                                                 <DataTemplate>
-                                                                    <HorizontalStackLayout>
-                                                                        <CheckBox IsChecked="{Binding OnValmis, Mode=TwoWay}"
-                                                                                  CheckedChanged="CheckBox_CheckedChanged"
-                                                                                  VerticalOptions="Center"
-                                                                                  Scale="0.8"/>
-                                                                        <VerticalStackLayout>
-                                                                            <Label Text="{Binding TehtavaNimi}"
-                                                                                   FontSize="Micro"
-                                                                                   VerticalOptions="Center"/>
-                                                                            <Label Text="{Binding Erapaiva, StringFormat='{0:dd.MM}'}"
-                                                                                   FontSize="12"
-                                                                                   TextColor="Gray">
-                                                                                <Label.Triggers>
-                                                                                    <DataTrigger TargetType="Label"
-                                                                                                 Binding="{Binding IsDeadLinePassed}"
-                                                                                                 Value="True">
-                                                                                        <Setter Property="TextColor"
-                                                                                                Value="Red"/>
-                                                                                    </DataTrigger>
-                                                                                </Label.Triggers>
-                                                                            </Label>
-                                                                            
-                                                                        </VerticalStackLayout>
-                                                                    </HorizontalStackLayout>
+                                                                    <Border Stroke="{StaticResource Gray200}"
+                                                                            StrokeThickness="1"
+                                                                            StrokeShape="RoundRectangle 8"
+                                                                            Padding="2"
+                                                                            Margin="0,2">
+                                                                        <HorizontalStackLayout>
+                                                                            <CheckBox IsChecked="{Binding OnValmis, Mode=TwoWay}"
+                                                                                      CheckedChanged="CheckBox_CheckedChanged"
+                                                                                      VerticalOptions="Center"
+                                                                                      Color="{StaticResource Primary}"
+                                                                                      Scale="0.8" />
+
+                                                                            <VerticalStackLayout>
+                                                                                <Label Text="{Binding TehtavaNimi}"
+                                                                                       FontSize="13"
+                                                                                       VerticalOptions="Center" 
+                                                                                       TextColor="{StaticResource Gray900}"/>
+
+                                                                                <Label Text="{Binding Erapaiva, StringFormat='Deadline: {0:dd.MM}'}"
+                                                                                       FontSize="11"
+                                                                                       TextColor="{StaticResource Gray500}">
+                                                                                    <Label.Triggers>
+                                                                                        <DataTrigger TargetType="Label"
+                                                                                                     Binding="{Binding IsDeadLinePassed}"
+                                                                                                     Value="True">
+                                                                                            <Setter Property="TextColor"
+                                                                                                    Value="Red" />
+                                                                                        </DataTrigger>
+                                                                                    </Label.Triggers>
+                                                                                </Label>
+                                                                            </VerticalStackLayout>
+                                                                        </HorizontalStackLayout>
+                                                                    </Border>
                                                                 </DataTemplate>
                                                             </CollectionView.ItemTemplate>
                                                         </CollectionView>
+
                                                         <!-- Alapalkki: valmius vasemmalle, loppupvm oikealle -->
                                                         <Grid Grid.Row="2"
                                                               VerticalOptions="End"
                                                               HorizontalOptions="Fill"
-                                                              Margin="0,0,0,0">
-                                                            
+                                                              Margin="0,5,0,0">
+
                                                             <!-- Valmius vasemmalle -->
                                                             <Label Text="{Binding ValmiusTeksti}"
-                                                                   TextColor="Gray"
+                                                                   TextColor="{StaticResource Gray500}"
                                                                    FontSize="12"
                                                                    HorizontalOptions="Start"
                                                                    VerticalOptions="End"/>
 
                                                             <!-- Loppupäivä oikealle -->
                                                             <Label Text="{Binding Loppupvm, StringFormat='{0:dd.MM.yyyy}'}"
-                                                                   TextColor="Gray"
+                                                                   TextColor="{StaticResource Gray500}"
                                                                    FontSize="12"
                                                                    HorizontalOptions="End"
                                                                    VerticalOptions="End">
@@ -196,7 +219,7 @@
                        Grid.Column="0"
                        FontAttributes="Bold"
                        FontSize="18"
-                       TextColor="Black"
+                       TextColor="{StaticResource MidnightBlue}"
                        HorizontalOptions="Start" />
 
                 <Label x:Name="NuoliIkoni"
@@ -204,7 +227,7 @@
                        Text="&#xE5CF;"
                        Grid.Column="1"
                        FontSize="20"
-                       TextColor="Black"
+                       TextColor="{StaticResource MidnightBlue}"
                        VerticalOptions="Center">
                     <Label.GestureRecognizers>
                         <TapGestureRecognizer Tapped="ToggleCompleted_Tapped"/>
@@ -213,28 +236,46 @@
             </Grid>
 
             <!-- VALMIIT PROJEKTIT LISTA -->
-            <CollectionView x:Name="CompletedList"
-                            ItemsSource="{Binding CompletedProjects}"
-                            IsVisible="False">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame Padding="10"
-                               Margin="5"
-                               BackgroundColor="#f1f1f1">
-                            <StackLayout>
-                                <Label Text="{Binding ProjektiNimi}"
-                                       FontAttributes="Bold"
-                                       TextColor="Black"/>
-                            </StackLayout>
+            <ScrollView Orientation="Vertical" VerticalScrollBarVisibility="Never">
+                <FlexLayout x:Name="CompletedList"
+                            BindableLayout.ItemsSource="{Binding CompletedProjects}"
+                            IsVisible="False"
+                            Wrap="Wrap"
+                            Direction="Row"
+                            JustifyContent="Start">
 
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer CommandParameter="{Binding ProjektiId}"
-                                                      Tapped="OpenProjectEdit_Tapped"/>
-                            </Frame.GestureRecognizers>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Frame WidthRequest="250"
+                                   HeightRequest="100"
+                                   Padding="15"
+                                   Margin="10"
+                                   CornerRadius="15"
+                                   BackgroundColor="#E8F5E9" 
+                                   BorderColor="#A5D6A7"
+                                   HasShadow="False">
+
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer CommandParameter="{Binding ProjektiId}"
+                                                          Tapped="OpenProjectEdit_Tapped"/>
+                                </Frame.GestureRecognizers>
+
+                                <VerticalStackLayout VerticalOptions="Center">
+                                    <Label Text="{Binding ProjektiNimi}"
+                                           FontAttributes="Bold"
+                                           TextColor="#1B5E20"
+                                           LineBreakMode="TailTruncation"/>
+
+                                    <Label Text="Valmis"
+                                           FontSize="12"
+                                           TextColor="#2E7D32"/>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+            </ScrollView>
+
         </VerticalStackLayout>
     </VerticalStackLayout>
 </ContentPage>
