@@ -1,4 +1,4 @@
-using System;
+Ôªøusing System;
 using Microsoft.Maui.Controls;
 using DeadlineTracker.Services;
 using DeadlineTracker.ViewModels;
@@ -33,31 +33,33 @@ public partial class Yleisnakyma : ContentPage
         bool confirm = await DisplayAlert(
             "Vahvistus",
             "Haluatko varmasti kirjautua ulos?",
-            "Kyll‰", "Peruuta");
+            "Kyll√§", "Peruuta");
 
         if (!confirm)
             return;
 
-        // tyhjenn‰ session
+        // tyhjenn√§ session
         Session.CurrentUserId = 0;
         Session.CurrentUsername = string.Empty;
 
-        // EI en‰‰ vaihdeta MainPagea k‰sin uuteen AppShelliin,
-        // koska meill‰ on sama Shell koko ajan k‰ynniss‰.
-
+        // EI en√§√§ vaihdeta MainPagea k√§sin uuteen AppShelliin,
+        // koska meill√§ on sama Shell koko ajan k√§ynniss√§.
         // takaisin kirjaudusivulle
         await Shell.Current.GoToAsync("//LoginPage");
     }
 
     private async void AddProject_Clicked(object sender, EventArgs e)
     {
-        // siirry projektin/teht‰v‰n luontiin (ProjectCreatePage)
+
+        // siirry projektin/teht√§v√§n luontiin (ProjectCreatePage)
         await Shell.Current.GoToAsync("ProjectCreate");
     }
 
     protected override async void OnAppearing()
     {
+
         base.OnAppearing();
+        TervetuloaTeksti.Text = $"Tervetuloa {Session.CurrentUsername} üëã";
         await vm.LoadProjectsAsync(Session.CurrentUserId, force: true, all: vm.ShowAll /* jos teit napin */);
     }
 
@@ -68,7 +70,7 @@ public partial class Yleisnakyma : ContentPage
             await vm.CompleteTaskAsync(t);
     }
 
-    // avataan projektin muokkausn‰kym‰ kun projektikorttia napautetaan
+    // avataan projektin muokkausn√§kym√§ kun projektikorttia napautetaan
     private async void OpenProjectEdit_Tapped(object sender, TappedEventArgs e)
     {
         if (e.Parameter is int iid)
@@ -76,13 +78,6 @@ public partial class Yleisnakyma : ContentPage
         else if (e.Parameter is long lid)
             await Shell.Current.GoToAsync($"ProjectEdit?id={lid}");
     }
-
-    //Mik‰h‰n tarkoitus t‰ll‰ oli
-    //private async void ToggleAll_Clicked(object sender, EventArgs e)
-    //{
-    //    vm.ShowAll = !vm.ShowAll;
-    //    await vm.LoadProjectsAsync(Session.CurrentUserId, force: true, all: vm.ShowAll);
-    //}
 
     private bool _completedVisible = false;
 
@@ -93,5 +88,4 @@ public partial class Yleisnakyma : ContentPage
 
         NuoliIkoni.Text = _completedVisible ? "\uE5CE" : "\uE5CF";
     }
-
 }

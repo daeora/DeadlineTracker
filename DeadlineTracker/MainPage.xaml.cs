@@ -14,9 +14,22 @@ namespace DeadlineTracker
             InitializeComponent();
         }
 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            // Tyhjentää sisäänkirjautumiskentän aina kun palataan MainPageen
+            Username.Text = string.Empty;
+            
+        }
+
         // Tää korvaa vanhan Admin/Admin-loginin
         private async void login_Clicked(object sender, EventArgs e)
         {
+            var btn = (Button)sender;
+
+            await btn.ScaleTo(0.9, 80, Easing.CubicOut);
+            await btn.ScaleTo(1.0, 80, Easing.CubicIn);
             try
             {
                 // Luetaan käyttäjänimi kentästä
